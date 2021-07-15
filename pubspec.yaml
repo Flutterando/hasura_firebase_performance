@@ -1,5 +1,5 @@
 name: hasura_firebase_performance
-description: A new Flutter package project.
+description: Hasura connect Interceptor implementation that sends querys metric data to Firebase.
 version: 0.0.2-alpha
 author: "Bwolf , Alvaro Vasconcelos"
 homepage: https://github.com/Flutterando/hasura_firebase_performance
