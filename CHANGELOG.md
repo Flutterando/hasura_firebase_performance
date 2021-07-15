@@ -1,3 +1,4 @@
-## [0.0.1] - TODO: Add release date.
+## [0.0.2-alpha] - Alpha Version of Firebase Performance to Hasura Connect
+## [0.0.1] - Alpha Version of Firebase Performance to Hasura Connect
 
 * TODO: Describe initial release.

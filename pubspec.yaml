@@ -1,8 +1,8 @@
 name: hasura_firebase_performance
 description: A new Flutter package project.
-version: 0.0.2-beta
-authors: [Bwolf,Alvaro Vasconcelos]
-homepage: http://flutterando.com.br
+version: 0.0.2-alpha
+author: "Bwolf , Alvaro Vasconcelos"
+homepage: https://github.com/Flutterando/hasura_firebase_performance
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
