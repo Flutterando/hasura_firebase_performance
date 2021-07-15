@@ -32,6 +32,7 @@ class HasuraFirebasePerformanceInterceptor extends InterceptorBase {
       metric?.httpResponseCode = data.statusCode;
       metric?.responsePayloadSize = data.data.toString().length;
       await metric?.stop();
+      _mapMetric.remove(data.request.query.hashCode);
       // ignore: avoid_catches_without_on_clauses
     } catch (e, stackTrace) {
       debugPrintStack(
@@ -48,6 +49,7 @@ class HasuraFirebasePerformanceInterceptor extends InterceptorBase {
       final metric = _mapMetric[error.request.query.hashCode];
       metric?.httpResponseCode = 500;
       await metric?.stop();
+      _mapMetric.remove(error.request.query.hashCode);
       // ignore: avoid_catches_without_on_clauses
     } catch (e, stackTrace) {
       debugPrintStack(
