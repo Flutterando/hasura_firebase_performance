@@ -1,6 +1,6 @@
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hasura_connect/hasura_connect.dart';
-import 'package:firebase_performance/firebase_performance.dart';
 
 class HasuraFirebasePerformanceInterceptor extends InterceptorBase {
   HasuraFirebasePerformanceInterceptor();
@@ -8,11 +8,12 @@ class HasuraFirebasePerformanceInterceptor extends InterceptorBase {
   final _mapMetric = <int, HttpMetric>{};
 
   @override
-  Future? onRequest(Request request) async {
+  Future? onRequest(Request request, HasuraConnect connect) async {
     try {
-      var metric = FirebasePerformance.instance.newHttpMetric('https://${request.query.key}'.replaceAll('_', '-'), HttpMethod.Post);
+      var metric = FirebasePerformance.instance.newHttpMetric('${request.url}'.replaceAll('_', '-'), HttpMethod.Post);
       metric.requestPayloadSize = request.query.document.length;
-      metric.putAttribute('query', request.query.document);
+      var size = request.query.document.indexOf('{');
+      metric.putAttribute('query', request.query.document.substring(0, size > 39 ? 39 : size));
       _mapMetric[request.query.hashCode] = metric;
       await metric.start();
       // ignore: avoid_catches_without_on_clauses
@@ -22,11 +23,11 @@ class HasuraFirebasePerformanceInterceptor extends InterceptorBase {
         stackTrace: stackTrace,
       );
     }
-    return super.onRequest(request);
+    return super.onRequest(request, connect);
   }
 
   @override
-  Future? onResponse(Response data) async {
+  Future? onResponse(Response data, HasuraConnect connect) async {
     try {
       final metric = _mapMetric[data.request.query.hashCode];
       metric?.httpResponseCode = data.statusCode;
@@ -40,11 +41,11 @@ class HasuraFirebasePerformanceInterceptor extends InterceptorBase {
         stackTrace: stackTrace,
       );
     }
-    return super.onResponse(data);
+    return super.onResponse(data, connect);
   }
 
   @override
-  Future? onError(HasuraError error) async {
+  Future? onError(HasuraError error, HasuraConnect connect) async {
     try {
       final metric = _mapMetric[error.request.query.hashCode];
       metric?.httpResponseCode = 500;
@@ -57,6 +58,6 @@ class HasuraFirebasePerformanceInterceptor extends InterceptorBase {
         stackTrace: stackTrace,
       );
     }
-    return super.onError(error);
+    return super.onError(error, connect);
   }
 }
